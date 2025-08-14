@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: beciftci <beciftci@student.42.fr>          +#+  +:+       +#+        */
+/*   By: macbook6 <macbook6@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/11 13:39:53 by femullao          #+#    #+#             */
-/*   Updated: 2025/08/12 15:58:40 by beciftci         ###   ########.fr       */
+/*   Updated: 2025/08/14 20:29:53 by macbook6         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ void	sigint_handler(int ptr)
 {
 	(void)ptr;
 	ft_putchar_fd('\n', STDOUT_FILENO);
-	rl_replace_line("", 0);
+	//rl_replace_line("", 0);
 	rl_on_new_line();
 	rl_redisplay();
 }
