@@ -6,7 +6,7 @@
 /*   By: femullao <femullao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 18:06:42 by femullao          #+#    #+#             */
-/*   Updated: 2025/08/09 18:10:34 by femullao         ###   ########.fr       */
+/*   Updated: 2025/08/17 16:58:31 by femullao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ int	check_chars(char *arg)
 	i = 0;
 	while (arg[i] != '=' && arg[i])
 	{
-		if (!ft_isalnum(arg[i]))
+		if (!ft_isalnum(arg[i]) && arg[i] != '_')
 			return (1);
 		i++;
 	}

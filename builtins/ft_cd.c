@@ -43,7 +43,7 @@ void	cd_home(t_mini *mini, char *oldpwd)
 	}
 	mini->exitcode = 0;
 	new_pwd = getcwd(NULL, 0);
-	update_env_pwd(mini, new_pwd + 1, oldpwd + 1);
+	update_env_pwd(mini, new_pwd, oldpwd);
 	free_cd(oldpwd, new_pwd);
 }
 
@@ -68,7 +68,7 @@ void	ft_cd(char **arg, t_mini *mini)
 			return ;
 		}
 		new_pwd = getcwd(NULL, 0);
-		update_env_pwd(mini, new_pwd + 1, pwd + 1);
+		update_env_pwd(mini, new_pwd, pwd);
 		free(new_pwd);
 		free(pwd);
 		mini->exitcode = 0;

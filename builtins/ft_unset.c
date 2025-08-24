@@ -40,7 +40,7 @@ void	unset_from_env(t_mini *mini, char *arg)
 		if (ft_strncmp(key, arg, ft_strlen(arg))
 			|| (ft_strlen(key) - 1 != ft_strlen(arg)))
 			new_env[j++] = ft_strdup(mini->menv[i]);
-		free (key);
+		free(key);
 		i++;
 	}
 	new_env[j] = NULL;
@@ -55,7 +55,8 @@ void	ft_unset(t_mini *mini, char **arg)
 	i = 1;
 	while (arg[i])
 	{
-		unset_from_env(mini, arg[i]);
+		if (arg[i][0] != '-')
+			unset_from_env(mini, arg[i]);
 		i++;
 	}
 	mini->exitcode = 0;

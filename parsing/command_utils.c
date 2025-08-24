@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   command_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macbook6 <macbook6@student.42.fr>          +#+  +:+       +#+        */
+/*   By: femullao <femullao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/09 20:14:57 by macbook6          #+#    #+#             */
-/*   Updated: 2025/08/09 20:31:10 by macbook6         ###   ########.fr       */
+/*   Created: 2025/08/17 17:11:02 by femullao          #+#    #+#             */
+/*   Updated: 2025/08/17 17:11:04 by femullao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,16 +95,21 @@ void	cleanup_str_for_argv(char *str, int i, int j)
 	ft_strtrim_in_place(str);
 }
 
-char	**extract_argv(char *sub_pipe_str)
+char	**extract_argv(char *sub_pipe_str, t_mini *mini)
 {
 	char	*cleaned_str;
+	char	*expanded;
 	char	**argv;
 
 	cleaned_str = ft_strdup(sub_pipe_str);
 	if (!cleaned_str)
 		return (NULL);
 	cleanup_str_for_argv(cleaned_str, 0, 0);
-	argv = ft_split_with_quotes(cleaned_str, ' ', 0);
+	expanded = process_dollar_signs(cleaned_str, mini);
 	free(cleaned_str);
+	if (!expanded)
+		return (NULL);
+	argv = ft_split_with_quotes(expanded, 0);
+	free(expanded);
 	return (argv);
 }

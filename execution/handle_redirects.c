@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   handle_redirects.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macbook6 <macbook6@student.42.fr>          +#+  +:+       +#+        */
+/*   By: femullao <femullao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/09 19:10:09 by macbook6          #+#    #+#             */
-/*   Updated: 2025/08/09 19:20:10 by macbook6         ###   ########.fr       */
+/*   Created: 2025/08/17 17:10:19 by femullao          #+#    #+#             */
+/*   Updated: 2025/08/17 17:10:21 by femullao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void	handle_output_redirect(t_redirects *redirect, t_mini *mini)
+int	handle_output_redirect(t_redirects *redirect, t_mini *mini)
 {
 	int	fd;
 
@@ -21,16 +21,17 @@ void	handle_output_redirect(t_redirects *redirect, t_mini *mini)
 	{
 		if (access(redirect->name, W_OK) == -1)
 			return (ft_cmd_file_error(redirect->name, 1,
-					redirect->exitflag, mini));
+					redirect->exitflag, mini), 1);
 		if (is_directory(redirect->name))
 			return (ft_cmd_file_error(redirect->name, 3,
-					redirect->exitflag, mini));
+					redirect->exitflag, mini), 1);
 	}
 	dup2(fd, STDOUT_FILENO);
 	close(fd);
+	return (0);
 }
 
-void	handle_append_redirect(t_redirects *redirect, t_mini *mini)
+int	handle_append_redirect(t_redirects *redirect, t_mini *mini)
 {
 	int	fd;
 
@@ -39,19 +40,18 @@ void	handle_append_redirect(t_redirects *redirect, t_mini *mini)
 	{
 		if (access(redirect->name, W_OK) == -1)
 			return (ft_cmd_file_error(redirect->name, 1,
-					redirect->exitflag, mini));
+					redirect->exitflag, mini), 1);
 		if (is_directory(redirect->name))
 			return (ft_cmd_file_error(redirect->name, 3,
-					redirect->exitflag, mini));
+					redirect->exitflag, mini), 1);
 	}
 	dup2(fd, STDOUT_FILENO);
 	close(fd);
+	return (0);
 }
 
-void	handle_stdin_redirect(t_redirects *redirect, t_mini *mini)
+int	handle_stdin_redirect(t_redirects *redirect, t_mini *mini, int fd)
 {
-	int	fd;
-
 	if (redirect->type == INPUT)
 	{
 		fd = open(redirect->name, O_RDONLY);
@@ -59,13 +59,13 @@ void	handle_stdin_redirect(t_redirects *redirect, t_mini *mini)
 		{
 			if (access(redirect->name, F_OK) == -1)
 				return (ft_cmd_file_error(redirect->name, 2,
-						redirect->exitflag, mini));
+						redirect->exitflag, mini), 1);
 			if (access(redirect->name, R_OK) == -1)
 				return (ft_cmd_file_error(redirect->name, 1,
-						redirect->exitflag, mini));
-			if (is_directory(redirect->name))
+						redirect->exitflag, mini), 1);
+			if (is_directory(redirect->name), 1)
 				return (ft_cmd_file_error(redirect->name, 3,
-						redirect->exitflag, mini));
+						redirect->exitflag, mini), 1);
 		}
 		dup2(fd, STDIN_FILENO);
 		close(fd);
@@ -75,6 +75,7 @@ void	handle_stdin_redirect(t_redirects *redirect, t_mini *mini)
 		dup2(redirect->heredoc_fd, STDIN_FILENO);
 		close(redirect->heredoc_fd);
 	}
+	return (0);
 }
 
 void	set_stdin(int *in_fd, int pipe_fd[2], t_command *curr)
@@ -88,21 +89,24 @@ void	set_stdin(int *in_fd, int pipe_fd[2], t_command *curr)
 	}
 }
 
-void	apply_redirects(t_command *cmd, t_mini *mini)
+int	apply_redirects(t_command *cmd, t_mini *mini)
 {
 	t_redirects	*tmp;
+	int			status;
 
+	status = 0;
 	tmp = cmd->ret;
 	while (tmp)
 	{
-		if (mini->exitcontrol == -1)
-			break ;
 		if (tmp->type == OUTPUT)
-			handle_output_redirect(tmp, mini);
+			status = handle_output_redirect(tmp, mini);
 		else if (tmp->type == APPEND)
-			handle_append_redirect(tmp, mini);
+			status = handle_append_redirect(tmp, mini);
 		else if (tmp->type == INPUT || tmp->type == HEREDOC)
-			handle_stdin_redirect(tmp, mini);
+			status = handle_stdin_redirect(tmp, mini, 0);
+		if (status == 1)
+			return (status);
 		tmp = tmp->next;
 	}
+	return (status);
 }

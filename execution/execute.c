@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macbook6 <macbook6@student.42.fr>          +#+  +:+       +#+        */
+/*   By: femullao <femullao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/09 19:05:49 by macbook6          #+#    #+#             */
-/*   Updated: 2025/08/09 19:07:55 by macbook6         ###   ########.fr       */
+/*   Created: 2025/08/17 17:10:10 by femullao          #+#    #+#             */
+/*   Updated: 2025/08/17 18:06:53 by femullao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,5 +23,7 @@ void	execute_command(char **args, t_mini *mini)
 	}
 	else
 		cmdpth = find_cmd_path(args, mini);
+	if (!cmdpth)
+		return ;
 	execve(cmdpth, args, mini->menv);
 }

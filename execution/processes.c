@@ -3,16 +3,28 @@
 /*                                                        :::      ::::::::   */
 /*   processes.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: beciftci <beciftci@student.42.fr>          +#+  +:+       +#+        */
+/*   By: femullao <femullao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/14 16:44:03 by beciftci          #+#    #+#             */
-/*   Updated: 2025/08/14 16:44:04 by beciftci         ###   ########.fr       */
+/*   Updated: 2025/08/16 20:12:58 by femullao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void	child_process(t_command *cmd, int pipe_fd[2], int in_fd, t_mini *mini)
+void	free_all(t_mini *mini)
+{
+	free_parser(mini);
+	free_pp(mini->menv);
+}
+
+void	close_pipe(int pipe_fd[2])
+{
+	close(pipe_fd[0]);
+	close(pipe_fd[1]);
+}
+
+void	chd_proc(t_command *cmd, int pipe_fd[2], int in_fd, t_mini *mini)
 {
 	cmd->pid = fork();
 	if (cmd->pid == 0)
@@ -25,16 +37,18 @@ void	child_process(t_command *cmd, int pipe_fd[2], int in_fd, t_mini *mini)
 		if (cmd->next)
 		{
 			dup2(pipe_fd[1], STDOUT_FILENO);
-			close(pipe_fd[0]);
-			close(pipe_fd[1]);
+			close_pipe(pipe_fd);
 		}
-		apply_redirects(cmd, mini);
-		if (is_command_builtin(cmd->argv[0]))
-			execute_builtin(cmd->argv, mini);
-		else
-			execute_command(cmd->argv, mini);
-		free_parser(mini);
-		free_pp(mini->menv);
+		if (apply_redirects(cmd, mini))
+			exit(mini->exitcode);
+		if (cmd && cmd->argv && cmd->argv[0])
+		{
+			if (is_command_builtin(cmd->argv[0]))
+				execute_builtin(cmd->argv, mini);
+			else
+				execute_command(cmd->argv, mini);
+		}
+		free_all(mini);
 		exit(mini->exitcode);
 	}
 }

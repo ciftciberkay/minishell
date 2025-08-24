@@ -6,7 +6,7 @@
 /*   By: femullao <femullao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 17:31:15 by beciftci          #+#    #+#             */
-/*   Updated: 2025/07/27 15:14:54 by femullao         ###   ########.fr       */
+/*   Updated: 2025/08/16 19:58:28 by femullao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,8 +49,16 @@ void	free_commands(t_command *cmd_list)
 	while (cmd_list)
 	{
 		temp_cmd = cmd_list->next;
-		free_split(cmd_list->argv);
-		free_redirects(cmd_list->ret);
+		if (cmd_list->argv)
+		{
+			free_split(cmd_list->argv);
+			cmd_list->argv = NULL;
+		}
+		if (cmd_list->ret)
+		{
+			free_redirects(cmd_list->ret);
+			cmd_list->ret = NULL;
+		}
 		free(cmd_list);
 		cmd_list = temp_cmd;
 	}

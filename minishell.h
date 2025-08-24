@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: beciftci <beciftci@student.42.fr>          +#+  +:+       +#+        */
+/*   By: femullao <femullao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/14 16:45:32 by beciftci          #+#    #+#             */
-/*   Updated: 2025/08/14 17:08:44 by beciftci         ###   ########.fr       */
+/*   Created: 2025/08/17 17:13:15 by femullao          #+#    #+#             */
+/*   Updated: 2025/08/17 17:13:16 by femullao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,8 @@
 # include <signal.h>
 # include <stdlib.h>
 
-enum{
+enum
+{
 	HEREDOC = 'H',
 	APPEND = 'A',
 	OUTPUT = 'O',
@@ -35,7 +36,8 @@ enum{
 	SQUOTE = 'S'
 };
 
-typedef struct s_redirects {
+typedef struct s_redirects
+{
 	int					type;
 	char				*name;
 	int					heredoc_fd;
@@ -43,7 +45,8 @@ typedef struct s_redirects {
 	struct s_redirects	*next;
 }	t_redirects;
 
-typedef struct s_command {
+typedef struct s_command
+{
 	char				**argv;
 	t_redirects			*ret;
 	pid_t				pid;
@@ -51,7 +54,8 @@ typedef struct s_command {
 	struct s_command	*next;
 }	t_command;
 
-typedef struct s_mini{
+typedef struct s_mini
+{
 	char		**menv;
 	t_command	*cmd;
 	t_redirects	*rd;
@@ -100,14 +104,14 @@ void		signal_handler(void);
 void		free_pp(char **ptr);
 int			is_directory(const char *path);;
 void		ft_cmd_file_error(char *cmd, int flag, int exitflag, t_mini *mini);
-void		handle_output_redirect(t_redirects *redirect, t_mini *mini);
-void		handle_append_redirect(t_redirects *redirect, t_mini *mini);
-void		handle_stdin_redirect(t_redirects *redirect, t_mini *mini);
+int			handle_output_redirect(t_redirects *redirect, t_mini *mini);
+int			handle_append_redirect(t_redirects *redirect, t_mini *mini);
+int			handle_stdin_redirect(t_redirects *redirect, t_mini *mini, int fd);
 void		set_stdin(int *in_fd, int pipe_fd[2], t_command *curr);
 int			is_stdinrdr(t_command *cmd);
 void		waiting_children(t_command *cmd, t_mini *mini, int the_flag);
-void		child_process(t_command *cmd, int pipe_fd[2], int in_fd, t_mini *mini);
-void		apply_redirects(t_command *cmd, t_mini *mini);
+void		chd_proc(t_command *cmd, int pipe_fd[2], int in_fd, t_mini *mini);
+int			apply_redirects(t_command *cmd, t_mini *mini);
 int			is_command_builtin(char *cmd);
 void		execute_builtin(char **args, t_mini *mini);
 void		only_one_builtin(t_command *cmd, t_mini *mini);
@@ -124,7 +128,7 @@ int			process_unquoted_string(char *str, int *i);
 void		ft_strtrim_in_place(char *str);
 int			ft_isspace(int c);
 int			is_redirect_char(char c);
-char		**ft_split_with_quotes(char *s, char c, int j);
+char		**ft_split_with_quotes(char *s, int j);
 void		parse(t_mini *mini);
 char		*tokenizer(char *input);
 void		determine_pipe_locs_and_split(t_mini *mini);
@@ -136,19 +140,19 @@ void		quotes_in(char *tokenized);
 int			quote_check(char *input);
 t_command	*create_command_node(void);
 void		add_command_to_list(t_command **head, t_command *new_node);
-char		**extract_argv(char *sub_pipe_str);
+char		**extract_argv(char *sub_pipe_str, t_mini *mini);
 void		cleanup_str_for_argv(char *str, int i, int j);
 void		parse_commands(t_mini *mini);
 t_redirects	*create_redirect_node(int type, char *name);
 void		add_redirect_to_list(t_redirects **head, t_redirects *new_node);
-char		*get_redirect_name(char *str, int *idx);
-t_redirects	*extract_redirects(char *sub_pipe_str);
+char		*get_redirect_name(t_mini *mini, char *str, int *idx);
+t_redirects	*extract_redirects(t_mini *mini, char *sub_pipe_str);
 void		free_split(char **arr);
 void		free_redirects(t_redirects *redir_list);
 void		free_commands(t_command *cmd_list);
 void		free_parser(t_mini *mini);
 int			check_syntax_errors(const char *input);
-char		*process_dollar_signs(const char *input, char **menv, t_mini *mini);
+char		*process_dollar_signs(const char *input, t_mini *mini);
 char		*expand_variable(const char *input, int *i, char **menv);
 char		*ft_strjoin_free(char *s1, char *s2);
 char		*exitcode_dollar(int exitcode);
@@ -164,5 +168,7 @@ int			process_input(t_mini *mini);
 int			process_dollar(t_mini *mini);
 void		execute_command_line(t_mini *mini);
 void		shell_loop(t_mini *mini);
+void		free_all(t_mini *mini);
+char		*ft_substr_join(const char *str, size_t start, size_t end);
 
 #endif

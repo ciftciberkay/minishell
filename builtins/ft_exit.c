@@ -6,7 +6,7 @@
 /*   By: femullao <femullao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 20:01:20 by femullao          #+#    #+#             */
-/*   Updated: 2025/08/02 13:58:56 by femullao         ###   ########.fr       */
+/*   Updated: 2025/08/17 16:56:00 by femullao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,21 +33,23 @@ static int	nonnum_exit(char *arg)
 static void	ft_exit_nonnum(t_mini *mini)
 {
 	free_parser(mini);
+	free_pp(mini->menv);
 	ft_putendl_fd("exit", STDOUT_FILENO);
-	ft_putendl_fd(" numeric argument required", STDERR_FILENO);
+	ft_putendl_fd("exit: numeric argument required", STDERR_FILENO);
 	exit (2);
 }
 
 static void	ft_exit_tma(t_mini *mini)
 {
-	free_parser(mini);
-	ft_putendl_fd(" too many arguments", STDERR_FILENO);
-	exit (1);
+	ft_putstr_fd("exit: ", STDERR_FILENO);
+	ft_putendl_fd("exit: too many arguments", STDERR_FILENO);
+	mini->exitcode = 1;
 }
 
 static void	ft_exit_num(t_mini *mini, int code)
 {
 	ft_putendl_fd("exit", STDOUT_FILENO);
+	free_pp(mini->menv);
 	free_parser(mini);
 	exit(code);
 }
@@ -61,6 +63,7 @@ void	ft_exit(char **arg, t_mini *mini)
 	if (arg[1] == NULL)
 	{
 		ft_putendl_fd("exit", STDOUT_FILENO);
+		free_pp(mini->menv);
 		free_parser(mini);
 		exit(mini->exitcode);
 	}

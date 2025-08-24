@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   set_execute.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macbook6 <macbook6@student.42.fr>          +#+  +:+       +#+        */
+/*   By: femullao <femullao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/09 19:39:53 by macbook6          #+#    #+#             */
-/*   Updated: 2025/08/09 19:41:38 by macbook6         ###   ########.fr       */
+/*   Created: 2025/08/17 17:10:34 by femullao          #+#    #+#             */
+/*   Updated: 2025/08/17 17:10:36 by femullao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ void	execute(t_command *cmd, t_mini *mini)
 			only_one_builtin(curr, mini);
 		}
 		else
-			child_process(curr, pipe_fd, in_fd, mini);
+			chd_proc(curr, pipe_fd, in_fd, mini);
 		set_stdin(&in_fd, pipe_fd, curr);
 		curr = curr->next;
 	}

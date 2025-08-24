@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_uts.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macbook6 <macbook6@student.42.fr>          +#+  +:+       +#+        */
+/*   By: femullao <femullao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/09 19:06:33 by macbook6          #+#    #+#             */
-/*   Updated: 2025/08/09 19:08:16 by macbook6         ###   ########.fr       */
+/*   Created: 2025/08/17 17:09:59 by femullao          #+#    #+#             */
+/*   Updated: 2025/08/17 18:08:33 by femullao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,11 +68,20 @@ char	*find_cmd_path(char **args, t_mini *mini)
 	char	**psb_paths;
 	char	*cmd;
 	char	*result;
+	char	*go_split;
 
 	result = NULL;
 	envpth = get_env_paths(mini->menv);
+	if (!envpth || *(ft_strchr(envpth, '=') + 1) == '\0')
+		envpth = "PATH=:./";
 	cmd = args[0];
-	psb_paths = ft_split(ft_strchr(envpth, '/'), ':');
+	if (!cmd[0] || (!ft_strncmp(cmd, ".", ft_strlen(cmd))
+			|| !ft_strncmp(cmd, "..", ft_strlen(cmd))))
+		return (ft_cmd_error(cmd, 0, mini), NULL);
+	go_split = ft_strchr(envpth, '=') + 1;
+	if (!go_split)
+		return (NULL);
+	psb_paths = ft_split(go_split, ':');
 	result = get_cmd_from_paths(cmd, psb_paths, mini);
 	free_pp(psb_paths);
 	if (!result)

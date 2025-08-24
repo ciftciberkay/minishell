@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   quoted_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macbook6 <macbook6@student.42.fr>          +#+  +:+       +#+        */
+/*   By: femullao <femullao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/13 22:13:31 by macbook6          #+#    #+#             */
-/*   Updated: 2025/08/13 22:15:51 by macbook6         ###   ########.fr       */
+/*   Created: 2025/08/17 17:12:41 by femullao          #+#    #+#             */
+/*   Updated: 2025/08/17 17:12:43 by femullao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int	count_words_quoted(char *s, char c, int i, int count)
+int	count_words_quoted(char *s, int i, int count)
 {
 	int	in_squote;
 	int	in_dquote;
@@ -27,9 +27,9 @@ int	count_words_quoted(char *s, char c, int i, int count)
 			in_squote = !in_squote;
 		else if (s[i] == '\"' && !in_squote)
 			in_dquote = !in_dquote;
-		if (s[i] != c && (!in_squote && !in_dquote))
+		if (!ft_strchr("\t ", s[i]) && (!in_squote && !in_dquote))
 			is_word = 1;
-		else if (s[i] == c && !in_squote && !in_dquote)
+		else if (ft_strchr("\t ", s[i]) && !in_squote && !in_dquote)
 		{
 			if (is_word && ++count)
 				is_word = 0;
@@ -80,7 +80,7 @@ char	*rmv_quotes_mnly(char *word, int i, int j)
 	return (result);
 }
 
-static char	*get_next_word_quoted(char **s_ptr, char c, int i, int start)
+static char	*get_next_word_quoted(char **s_ptr, int i, int start)
 {
 	int		in_squote;
 	int		in_dquote;
@@ -89,10 +89,11 @@ static char	*get_next_word_quoted(char **s_ptr, char c, int i, int start)
 
 	in_squote = 0;
 	in_dquote = 0;
-	while ((*s_ptr)[i] == c)
+	while (ft_strchr(" \t", (*s_ptr)[i]))
 		i++;
 	start = i;
-	while ((*s_ptr)[i] && !((*s_ptr)[i] == c && !in_squote && !in_dquote))
+	while ((*s_ptr)[i] && !(ft_strchr(" \t", (*s_ptr)[i])
+	&& !in_squote && !in_dquote))
 	{
 		skip_quote((*s_ptr)[i], &in_squote, &in_dquote);
 		i++;
@@ -107,7 +108,7 @@ static char	*get_next_word_quoted(char **s_ptr, char c, int i, int start)
 	return (ret);
 }
 
-char	**ft_split_with_quotes(char *s, char c, int j)
+char	**ft_split_with_quotes(char *s, int j)
 {
 	char	**arr;
 	int		word_count;
@@ -115,14 +116,15 @@ char	**ft_split_with_quotes(char *s, char c, int j)
 
 	if (!s)
 		return (NULL);
-	word_count = count_words_quoted(s, c, 0, 0);
+	word_count = count_words_quoted(s, 0, 0);
 	arr = malloc(sizeof(char *) * (word_count + 1));
 	if (!arr)
 		return (NULL);
-	s_iter = s;
+	if (word_count > 0)
+		s_iter = s;
 	while (j < word_count)
 	{
-		arr[j] = get_next_word_quoted(&s_iter, c, 0, 0);
+		arr[j] = get_next_word_quoted(&s_iter, 0, 0);
 		if (!arr[j])
 		{
 			free_split(arr);

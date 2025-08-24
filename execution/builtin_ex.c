@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_ex.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macbook6 <macbook6@student.42.fr>          +#+  +:+       +#+        */
+/*   By: femullao <femullao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/09 18:52:00 by macbook6          #+#    #+#             */
-/*   Updated: 2025/08/09 18:54:18 by macbook6         ###   ########.fr       */
+/*   Created: 2025/08/09 18:52:00 by femullao          #+#    #+#             */
+/*   Updated: 2025/08/17 17:09:39 by femullao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,11 @@
 
 int	is_command_builtin(char *cmd)
 {
+	if (!cmd)
+		return (0);
+	if (!ft_strncmp(cmd, ".", ft_strlen(cmd))
+		|| !ft_strncmp(cmd, "..", ft_strlen(cmd)))
+		return (0);
 	if (!ft_strncmp(cmd, "cd", 3) || !ft_strncmp(cmd, "echo", 5)
 		|| !ft_strncmp(cmd, "pwd", 4) || !ft_strncmp(cmd, "export", 7)
 		|| !ft_strncmp(cmd, "unset", 6) || !ft_strncmp(cmd, "env", 4)
@@ -37,16 +42,14 @@ void	execute_builtin(char **args, t_mini *mini)
 	else if (!ft_strncmp(args[0], "env", 4))
 		ft_env(mini->menv, mini);
 	else if (!ft_strncmp(args[0], "exit", 5))
-	{
-		free_pp(mini->menv);
 		ft_exit(args++, mini);
-	}
 }
 
 void	only_one_builtin(t_command *cmd, t_mini *mini)
 {
 	cmd->the_flag = 0;
-	apply_redirects(cmd, mini);
+	if (apply_redirects(cmd, mini))
+		return ;
 	if (mini->exitcontrol == -1)
 		return ;
 	execute_builtin(cmd->argv, mini);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   error_mssg.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macbook6 <macbook6@student.42.fr>          +#+  +:+       +#+        */
+/*   By: femullao <femullao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/18 13:56:45 by macbook6          #+#    #+#             */
-/*   Updated: 2025/08/09 20:04:40 by macbook6         ###   ########.fr       */
+/*   Created: 2025/08/17 17:11:36 by femullao          #+#    #+#             */
+/*   Updated: 2025/08/17 17:11:37 by femullao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,6 @@ static int	check_initial_errors(const char *input, int *i)
 {
 	while (input[*i] && ft_isspace(input[*i]))
 		(*i)++;
-	if (input[*i] == '>' || input[*i] == '<')
-	{
-		printf("syntax error: unexpected redirect operator at beginning\n");
-		return (1);
-	}
 	while (ft_isspace(input[*i]))
 		(*i)++;
 	if (input[*i] == '|')

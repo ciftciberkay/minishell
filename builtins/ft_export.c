@@ -6,7 +6,7 @@
 /*   By: femullao <femullao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 19:30:14 by femullao          #+#    #+#             */
-/*   Updated: 2025/08/09 18:05:33 by femullao         ###   ########.fr       */
+/*   Updated: 2025/08/17 17:05:29 by femullao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,10 @@ static int	should_update_env(char *value, char *env_value)
 
 	val_len = ft_strlen(value);
 	env_len = ft_strlen(env_value);
-	return (ft_strncmp(value, env_value, env_len) != 0 || val_len != env_len);
+	if (ft_strncmp(value, env_value, env_len) != 0 || val_len != env_len)
+		return (1);
+	else
+		return (0);
 }
 
 static void	handle_env_update(t_mini *mini, char *arg, char *key, char *value)

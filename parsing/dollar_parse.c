@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   dollar_parse.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macbook6 <macbook6@student.42.fr>          +#+  +:+       +#+        */
+/*   By: femullao <femullao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/13 21:47:13 by macbook6          #+#    #+#             */
-/*   Updated: 2025/08/13 22:05:46 by macbook6         ###   ########.fr       */
+/*   Created: 2025/08/17 17:11:10 by femullao          #+#    #+#             */
+/*   Updated: 2025/08/17 17:11:13 by femullao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,10 +25,12 @@ static int	handle_dollar_quote_ctx(t_dctx *c)
 {
 	char	*tmp;
 	int		start;
+	int		old_i;
 
-	if (c->sq || !(c->in[c->i] == '$' && c->in[c->i + 1] == '"'
+	if (c->sq || c->dq || !(c->in[c->i] == '$' && c->in[c->i + 1] == '"'
 			&& c->in[c->i + 2]))
 		return (0);
+	old_i = c->i;
 	c->i += 2;
 	start = c->i;
 	while (c->in[c->i] && c->in[c->i] != '"')
@@ -39,8 +41,10 @@ static int	handle_dollar_quote_ctx(t_dctx *c)
 		if (tmp)
 			c->res = ft_strjoin_free(c->res, tmp);
 		c->i++;
+		return (1);
 	}
-	return (1);
+	c->i = old_i;
+	return (0);
 }
 
 static void	init_ctx(t_dctx *c, const char *input, t_mini *mini)
@@ -76,11 +80,10 @@ static char	*dollar_process_loop(t_dctx *c)
 	return (c->res);
 }
 
-char	*process_dollar_signs(const char *input, char **menv, t_mini *mini)
+char	*process_dollar_signs(const char *input, t_mini *mini)
 {
 	t_dctx	c;
 
-	(void)menv;
 	init_ctx(&c, input, mini);
 	return (dollar_process_loop(&c));
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_command.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macbook6 <macbook6@student.42.fr>          +#+  +:+       +#+        */
+/*   By: femullao <femullao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/22 16:55:52 by macbook6          #+#    #+#             */
-/*   Updated: 2025/08/09 20:31:33 by macbook6         ###   ########.fr       */
+/*   Created: 2025/08/17 17:11:52 by femullao          #+#    #+#             */
+/*   Updated: 2025/08/17 17:11:54 by femullao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,8 @@ int	process_unquoted_string(char *str, int *i)
 
 static int	process_single_command(t_mini *mini, t_command *current_cmd, int i)
 {
-	current_cmd->argv = extract_argv(mini->sub_pipes[i]);
-	current_cmd->ret = extract_redirects(mini->sub_pipes[i]);
+	current_cmd->argv = extract_argv(mini->sub_pipes[i], mini);
+	current_cmd->ret = extract_redirects(mini, mini->sub_pipes[i]);
 	if (!current_cmd->argv && !current_cmd->ret
 		&& mini->sub_pipes[i] && ft_strlen(mini->sub_pipes[i]) > 0)
 	{

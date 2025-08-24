@@ -3,25 +3,25 @@
 /*                                                        :::      ::::::::   */
 /*   extract_rdr.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: koraym <koraym@student.42.fr>              +#+  +:+       +#+        */
+/*   By: femullao <femullao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/12 10:30:00 by koraym           #+#    #+#             */
-/*   Updated: 2025/08/12 10:30:00 by koraym           ###   ########.fr       */
+/*   Created: 2025/08/17 17:08:23 by femullao          #+#    #+#             */
+/*   Updated: 2025/08/17 17:08:28 by femullao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-static int	process_redirect(t_redirects **head, char *temp_str, int *i,
-	int type)
+static int	process_redirect(t_mini *mini, t_redirects **head, char *temp_str,
+	int st[])
 {
 	char		*name;
 	t_redirects	*new_node;
 
-	name = get_redirect_name(temp_str, i);
+	name = get_redirect_name(mini, temp_str, &st[0]);
 	if (!name)
 		return (0);
-	new_node = create_redirect_node(type, name);
+	new_node = create_redirect_node(st[3], name);
 	free(name);
 	if (!new_node)
 		return (0);
@@ -29,38 +29,39 @@ static int	process_redirect(t_redirects **head, char *temp_str, int *i,
 	return (1);
 }
 
-static int	handle_character(t_redirects **head, char *temp_str, int *i,
-	int *quotes)
+static int	handle_character(t_mini *mini, t_redirects **head, char *temp_str,
+	int st[])
 {
 	int	type;
 
-	update_quote_status(temp_str[*i], &quotes[0], &quotes[1]);
+	update_quote_status(temp_str[st[0]], &st[1], &st[2]);
 	type = 0;
-	if (!quotes[0] && !quotes[1])
-		type = get_redirect_type(temp_str, i);
+	if (!st[1] && !st[2])
+		type = get_redirect_type(temp_str, &st[0]);
 	if (type != 0)
 	{
-		if (!process_redirect(head, temp_str, i, type))
+		st[3] = type;
+		if (!process_redirect(mini, head, temp_str, st))
 			return (0);
 	}
 	else
-		(*i)++;
+		st[0]++;
 	return (1);
 }
 
-static t_redirects	*process_string(char *temp_str)
+static t_redirects	*process_string(t_mini *mini, char *temp_str)
 {
 	t_redirects	*head;
-	int			i;
-	int			quotes[2];
+	int			st[4];
 
 	head = NULL;
-	i = 0;
-	quotes[0] = 0;
-	quotes[1] = 0;
-	while (temp_str[i])
+	st[0] = 0;
+	st[1] = 0;
+	st[2] = 0;
+	st[3] = 0;
+	while (temp_str[st[0]])
 	{
-		if (!handle_character(&head, temp_str, &i, quotes))
+		if (!handle_character(mini, &head, temp_str, st))
 		{
 			free_redirects(head);
 			return (NULL);
@@ -69,7 +70,7 @@ static t_redirects	*process_string(char *temp_str)
 	return (head);
 }
 
-t_redirects	*extract_redirects(char *sub_pipe_str)
+t_redirects	*extract_redirects(t_mini *mini, char *sub_pipe_str)
 {
 	char		*temp_str;
 	t_redirects	*result;
@@ -77,7 +78,7 @@ t_redirects	*extract_redirects(char *sub_pipe_str)
 	temp_str = ft_strdup(sub_pipe_str);
 	if (!temp_str)
 		return (NULL);
-	result = process_string(temp_str);
+	result = process_string(mini, temp_str);
 	free(temp_str);
 	return (result);
 }

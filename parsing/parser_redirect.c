@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_redirect.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: koraym <koraym@student.42.fr>              +#+  +:+       +#+        */
+/*   By: femullao <femullao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/22 16:56:31 by macbook6          #+#    #+#             */
-/*   Updated: 2025/08/12 10:27:48 by koraym           ###   ########.fr       */
+/*   Created: 2025/08/17 17:12:11 by femullao          #+#    #+#             */
+/*   Updated: 2025/08/17 17:12:12 by femullao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,11 +72,18 @@ static char	*extract_complete_filename(char *str, int *idx)
 	return (result);
 }
 
-char	*get_redirect_name(char *str, int *idx)
+char	*get_redirect_name(t_mini *mini, char *str, int *idx)
 {
-	char	*final_name;
+	char	*name;
+	char	*expanded;
 
 	skip_whitespace(str, idx);
-	final_name = extract_complete_filename(str, idx);
-	return (final_name);
+	name = extract_complete_filename(str, idx);
+	if (!name)
+		return (NULL);
+	expanded = process_dollar_signs(name, mini);
+	free(name);
+	if (!expanded)
+		return (NULL);
+	return (expanded);
 }

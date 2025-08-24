@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macbook6 <macbook6@student.42.fr>          +#+  +:+       +#+        */
+/*   By: femullao <femullao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/27 17:32:03 by beciftci          #+#    #+#             */
-/*   Updated: 2025/08/13 22:16:23 by macbook6         ###   ########.fr       */
+/*   Created: 2025/08/17 17:12:16 by femullao          #+#    #+#             */
+/*   Updated: 2025/08/17 17:12:17 by femullao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,7 +116,7 @@ char	*expand_variable(const char *input, int *i, char **menv)
 	while (input[end] && (ft_isalnum(input[end]) || input[end] == '_'))
 		end++;
 	*i = end;
-	var_name = ft_substr(input, start, end - start);
+	var_name = ft_substr_join(input, start, end - start);
 	if (!var_name)
 		return (NULL);
 	var_value = get_value(get_from_env(menv, var_name));

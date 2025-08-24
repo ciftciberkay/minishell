@@ -6,7 +6,7 @@
 /*   By: femullao <femullao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/02 12:52:17 by femullao          #+#    #+#             */
-/*   Updated: 2025/08/09 16:35:32 by femullao         ###   ########.fr       */
+/*   Updated: 2025/08/16 20:12:06 by femullao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,7 @@ void	ft_cmd_error(char *cmd, int flag, t_mini *mini)
 	}
 	else if (flag == 3)
 		ft_putendl_fd(" Is a directory", STDERR_FILENO);
-	free_parser(mini);
-	free_pp(mini->menv);
+	free_all(mini);
 	exit(127 - (flag % 2));
 }
 
@@ -50,6 +49,8 @@ void	ft_cmd_file_error(char *cmd, int flag, int exitflag, t_mini *mini)
 	}
 	if (flag == 3)
 		ft_putendl_fd(" Is a directory: ", STDERR_FILENO);
+	if (mini->cmd->the_flag && (flag == 1 || flag == 2 || flag == 3))
+		free_all(mini);
 	if (exitflag)
 		exit(1);
 	else

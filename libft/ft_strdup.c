@@ -6,7 +6,7 @@
 /*   By: femullao <femullao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/12 16:12:54 by femullao          #+#    #+#             */
-/*   Updated: 2024/10/12 17:18:08 by femullao         ###   ########.fr       */
+/*   Updated: 2025/08/16 19:59:45 by femullao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ char	*ft_strdup(const char *s1)
 	char	*b;
 	size_t	i;
 
+	if (!s1)
+		return (NULL);
 	b = malloc(sizeof(char) * (ft_strlen(s1) + 1));
 	if (!b)
 		return (NULL);
